@@ -7,7 +7,7 @@ class Student:
         self.finished_courses = []
         self.courses_in_progress = []
         self.grades = {}
-        self.students_list.append(self)
+        Student.students_list.append(self)
 
 
     def rate_lecturer(self, lecturer, course, grade):
@@ -45,9 +45,18 @@ class Student:
         return f"Имя: {self.name}\nФамилия: {self.surname}\nСредняя оценка за домашние задания: {self.average_grades()}\
         \nКурсы в процессе изучения:{self.courses_in_progress_print()}\nЗавершенные курсы:{self.finished_courses_print()}"
 
-    def compare_students(self, student_1, student_2): #функция для сравнения оценок студентов между собой
-        if student_1.average_grades() > student_2.average_grades():
-            print('ок')
+    def __lt__(self, other):
+        student_1_average_grades = self.average_grades()
+        student_2_average_grades = other.average_grades()
+        return student_1_average_grades < student_2_average_grades
+    def __gt__(self, other):
+        student_1_average_grades = self.average_grades()
+        student_2_average_grades = other.average_grades()
+        return student_1_average_grades > student_2_average_grades
+    def __eq__(self, other):
+        student_1_average_grades = self.average_grades()
+        student_2_average_grades = other.average_grades()
+        return student_1_average_grades == student_2_average_grades
 
 class Mentor:
     def __init__(self, name, surname):
@@ -56,12 +65,12 @@ class Mentor:
         self.courses_attached = []
 
 
-
 class Lecturer(Mentor):
+    lecturers_list = []
     def __init__(self, name, surname):
         Mentor.__init__(self, name, surname)
         self.grades = {}
-
+        Lecturer.lecturers_list.append(self)
 
     def average_grades(self):
         grades_list = []
@@ -76,7 +85,18 @@ class Lecturer(Mentor):
     def __str__(self):
         return f"Имя: {self.name}\nФамилия: {self.surname}\nСредняя оценка за лекции: {self.average_grades()}"
 
-
+    def __lt__(self, other):
+        lecturer_1_average_grades = self.average_grades()
+        lecturer_2_average_grades = other.average_grades()
+        return lecturer_1_average_grades < lecturer_2_average_grades
+    def __gt__(self, other):
+        lecturer_1_average_grades = self.average_grades()
+        lecturer_2_average_grades = other.average_grades()
+        return lecturer_1_average_grades > lecturer_2_average_grades
+    def __eq__(self, other):
+        lecturer_1_average_grades = self.average_grades()
+        lecturer_2_average_grades = other.average_grades()
+        return lecturer_1_average_grades == lecturer_2_average_grades
 class Reviewer(Mentor):
     def __init__(self, name, surname):
         Mentor.__init__(self, name, surname)
@@ -92,7 +112,6 @@ class Reviewer(Mentor):
 
     def __str__(self):
         return f"Имя: {self.name}\nФамилия: {self.surname}"
-
 
 
 best_student = Student('Ruoy', 'Eman', 'your_gender')
@@ -152,23 +171,57 @@ best_student_3.rate_lecturer(good_lecturer_3, 'Trial', 7)
 best_student_3.rate_lecturer(good_lecturer_3, 'Trial', 8)
 best_student_3.rate_lecturer(good_lecturer_3, 'Trial', 9)
 
-#print(best_student_2)
-#print(best_student_3)
-#print(good_lecturer_2)
-#print(good_lecturer_3)
-#print(cool_reviewer_2)
-#print(cool_reviewer_3)
+print(best_student_2)
+print("--------------")
+print(best_student_3)
+print("--------------")
+print(good_lecturer_2)
+print("--------------")
+print(good_lecturer_3)
+print("--------------")
+print(cool_reviewer_2)
+print("--------------")
+print(cool_reviewer_3)
+print("--------------")
 
-student_1 = input("Введите первого студента для сравнения:")
-student_2 = input("Введите второго студента для сравнения:")
-Student.compare_students(student_1, student_2)
+is_lt = print(best_student_2 < best_student_3)
+is_gt = print(best_student_2 > best_student_3)
+is_eq= print(best_student_2 == best_student_3)
+print("--------------")
+is_lt = print(good_lecturer < good_lecturer_3)
+is_gt = print(good_lecturer > good_lecturer_3)
+is_eq= print(good_lecturer == good_lecturer_3)
+print("--------------")
+print(Student.students_list[0])
 
-# def average_rate_total(course, students_list):
-#     course = input("Введите название курса:")
-#     students_list = Student.students_list
-#     for student in students_list:
-#         if course in Student.courses_in_progress or course in self.finished_courses:
+def average_mark_hw(students_list, course_hw):
+    mark_list=[]
+    mark_sum = 0
+    for student in students_list:
+     if course_hw in student.grades.keys():
+        for marks in student.grades.values():
+            for mark in marks:
+                mark_list.append(mark)
+    mark_list_len = len(mark_list)
+    for mark in mark_list:
+        mark_sum= mark_sum+mark
+    return print(mark_sum/mark_list_len)
 
+def average_mark_lct(lecturers_list, course_lct):
+    mark_list=[]
+    mark_sum = 0
+    for lecturer in lecturers_list:
+     if course_lct in lecturer.grades.keys():
+        for marks in lecturer.grades.values():
+            for mark in marks:
+                mark_list.append(mark)
+    mark_list_len = len(mark_list)
+    for mark in mark_list:
+        mark_sum= mark_sum+mark
+    return print(mark_sum/mark_list_len)
 
-
-
+course_hw = input('Введите название курса для оценки студентов:')
+average_mark_hw(Student.students_list, course_hw)
+print("--------------")
+course_lct = input('Введите название курса для оценки лекторов:')
+average_mark_hw(Lecturer.lecturers_list, course_lct)
